@@ -86,7 +86,7 @@ allprojects {
         }
         mavenCentral()
         maven {
-            url = uri("https://genesisglobal.jfrog.io/genesisglobal/libs-release-client")
+            url = uri(properties["genesisArtifactoryPath"].toString())
             credentials {
                 username = properties["genesisArtifactoryUser"].toString()
                 password = properties["genesisArtifactoryPassword"].toString()
