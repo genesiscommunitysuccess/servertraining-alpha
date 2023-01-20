@@ -19,7 +19,6 @@ export const HomeStyles = css`
 
   .top-layout {
   height: 90%;
-  display: flex;
   flex-direction: row;
   }
 
