@@ -10,6 +10,7 @@ dependencies {
     api("global.genesis:genesis-dataserver2")
     api(project(":alpha-messages"))
     api(project(":alpha-eventhandler"))
+    api("global.genesis:genesis-pal-datapipeline")
     compileOnly(project(path = ":alpha-dictionary-cache", configuration = "codeGen"))
     testCompileOnly(project(":alpha-config"))
     testImplementation("global.genesis:genesis-dbtest")
