@@ -1,6 +1,6 @@
 import global.genesis.gen.config.tables.COUNTERPARTY
 import global.genesis.gen.config.tables.COUNTERPARTY.COUNTERPARTY_NAME
-import global.genesis.gen.config.tables.TRADE.COUNTERPARTY_LEI
+import global.genesis.gen.config.tables.COUNTERPARTY.COUNTERPARTY_LEI
 
 pipelines {
   csvSource("cp-pipeline") {
@@ -8,10 +8,10 @@ pipelines {
 
     map("mapper-name", COUNTERPARTY) {
       COUNTERPARTY_NAME {
-        property = "counterpartyName"
+        property = "COUNTERPARTY_NAME"
       }
       COUNTERPARTY_LEI {
-        property = "counterpartyLei"
+        property = "COUNTERPARTY_LEI"
       }
     }
   }
