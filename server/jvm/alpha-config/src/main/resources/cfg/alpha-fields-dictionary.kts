@@ -12,9 +12,9 @@
 fields {
 
     field("TRADE_ID", type = STRING)
-    field("QUANTITY", type = INT)
-    field("PRICE", type = DOUBLE)
-    field("SYMBOL", type = STRING)
+    field("QUANTITY", type = INT, nullable = SysDef.NULLABILITY_FOR_TRADE_FIELDS)
+    field("PRICE", type = DOUBLE, nullable = SysDef.NULLABILITY_FOR_TRADE_FIELDS)
+    field("SYMBOL", type = STRING, nullable = SysDef.NULLABILITY_FOR_TRADE_FIELDS)
     field("DIRECTION", type = ENUM("BUY", "SELL", default = "BUY"))
 
     field("COUNTERPARTY_ID", type = STRING)
@@ -29,8 +29,8 @@ fields {
     field("CURRENCY_ID", type = STRING)
     field("ASSET_CLASS", type = STRING)
 
-    field("TRADE_DATE", type = DATE)
-    field("ENTERED_BY", type = STRING)
+    field("TRADE_DATE", type = DATE, nullable = SysDef.NULLABILITY_FOR_TRADE_FIELDS)
+    field("ENTERED_BY", type = STRING, nullable = SysDef.NULLABILITY_FOR_TRADE_FIELDS)
     field(name = "TRADE_STATUS", type = ENUM("NEW", "ALLOCATED", "CANCELLED", default = "NEW"))
 
     field("POSITION_ID", type = STRING)
