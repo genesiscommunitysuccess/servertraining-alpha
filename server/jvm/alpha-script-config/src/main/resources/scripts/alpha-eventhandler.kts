@@ -69,8 +69,14 @@ eventHandler {
 
     eventHandler<Counterparty>(name = "COUNTERPARTY_INSERT", transactional = true) {
         onCommit { event ->
-            entityDb.insert(event.details)
-            ack()
+            try {
+                entityDb.insert(event.details)
+                ack()
+            }
+            catch (e: Exception) {
+                val errorMessage = "COUNTERPARTY_INSERT -> Error on adding Counterparty. Error message: ${e.message}. Error cause: ${e.cause}"
+                nack(errorMessage)
+            }
         }
     }
 
@@ -158,6 +164,7 @@ eventHandler {
             tradesNegativePrices.forEach { t ->
                 t.price = 0
             }
+
             entityDb.modifyAll(*tradesNegativePrices.toList().toTypedArray())
             ack()
        }
