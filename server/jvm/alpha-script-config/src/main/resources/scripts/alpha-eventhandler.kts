@@ -5,6 +5,7 @@ import global.genesis.gen.dao.Trade
 import global.genesis.alpha.message.event.TradeAllocated
 import global.genesis.alpha.message.event.TradeCancelled
 import global.genesis.alpha.message.event.PositionReport
+import global.genesis.alpha.message.event.TradeStandardization
 import global.genesis.commons.standards.GenesisPaths
 import global.genesis.gen.dao.repository.PositionAsyncRepository
 import global.genesis.gen.view.repository.TradeViewAsyncRepository
@@ -146,5 +147,19 @@ eventHandler {
 
             ack()
         }
+    }
+
+    eventHandler<TradeStandardization>(transactional = true) {
+        onCommit {
+            val tradesNegativePrices = entityDb.
+                getBulk(TRADE).toList()
+                .filter { it.price < 0 }
+
+            tradesNegativePrices.forEach { t ->
+                t.price = 0
+            }
+            entityDb.modifyAll(*tradesNegativePrices.toList().toTypedArray())
+            ack()
+       }
     }
 }
