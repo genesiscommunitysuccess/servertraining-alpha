@@ -6,8 +6,8 @@ import global.genesis.alpha.message.event.TradeAllocated
 import global.genesis.alpha.message.event.TradeCancelled
 import global.genesis.alpha.message.event.PositionReport
 import global.genesis.alpha.message.event.TradeStandardization
+import global.genesis.alpha.message.event.CustomInstrumentEventReply
 import global.genesis.commons.standards.GenesisPaths
-import global.genesis.gen.dao.repository.PositionAsyncRepository
 import global.genesis.gen.view.repository.TradeViewAsyncRepository
 import global.genesis.jackson.core.GenesisJacksonMapper
 
@@ -22,7 +22,6 @@ import global.genesis.jackson.core.GenesisJacksonMapper
  * Modification History
  */
 val tradeViewRepo = inject<TradeViewAsyncRepository>()
-val positionRepo = inject<PositionAsyncRepository>()
 
 eventHandler {
     val stateMachine = inject<TradeStateMachine>()
@@ -94,10 +93,18 @@ eventHandler {
         }
     }
 
-    eventHandler<Instrument>(name = "INSTRUMENT_INSERT", transactional = true) {
+    eventHandler<Instrument, CustomInstrumentEventReply>(name = "INSTRUMENT_INSERT", transactional = true) {
+        onException { event, throwable ->
+            CustomInstrumentEventReply.InstrumentEventAck(throwable.message!!)
+        }
+        onValidate {
+            val instrumentEvent = it.details
+            require(instrumentEvent.instrumentName!!.length > 2) { "instrumentName needs at least 3 characters" }
+            CustomInstrumentEventReply.InstrumentEventValidateAck()
+        }
         onCommit { event ->
-            entityDb.insert(event.details)
-            ack()
+            val result = entityDb.insert(event.details)
+            CustomInstrumentEventReply.InstrumentEventAck(result.record.instrumentId)
         }
     }
 
@@ -162,7 +169,7 @@ eventHandler {
                 .filter { it.price < 0 }
 
             tradesNegativePrices.forEach { t ->
-                t.price = 0
+                t.price = 0.0
             }
 
             entityDb.modifyAll(*tradesNegativePrices.toList().toTypedArray())
