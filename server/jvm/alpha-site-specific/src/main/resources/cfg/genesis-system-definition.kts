@@ -26,6 +26,14 @@ systemDefinition {
 
         item(name = "ADMIN_PERMISSION_ENTITY_TABLE", value = "COUNTERPARTY")
         item(name = "ADMIN_PERMISSION_ENTITY_FIELD", value = "COUNTERPARTY_ID")
+
+        item(name = "SYSTEM_DEFAULT_USER_NAME", value = "" )
+        item(name = "SYSTEM_DEFAULT_EMAIL", value = "notifications@freesmtpservers.com" )
+        item(name = "EMAIL_SMTP_HOST", value = "smtp.freesmtpservers.com" )
+        item(name = "EMAIL_SMTP_PORT", value = "25" )
+        item(name = "EMAIL_SMTP_USER", value = "" )
+        item(name = "EMAIL_SMTP_PW", value = "" )
+        item(name = "EMAIL_SMTP_PROTOCOL", value = "SMTP")
     }
 
     systems {

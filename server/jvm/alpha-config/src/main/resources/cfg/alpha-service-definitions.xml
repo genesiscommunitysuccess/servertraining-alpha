@@ -16,4 +16,5 @@
     <service host="localhost" name="ALPHA_CONSOLIDATOR" port="11002"/>
     <service host="localhost" name="ALPHA_EVALUATOR" port="11003"/>
     <service host="localhost" name="ALPHA_DATAPIPELINE" port="11004"/>
+    <service host="localhost" name="ALPHA_NOTIFY" port="11005"/>
 </configuration>

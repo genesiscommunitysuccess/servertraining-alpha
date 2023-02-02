@@ -95,7 +95,7 @@ eventHandler {
 
     eventHandler<Instrument, CustomInstrumentEventReply>(name = "INSTRUMENT_INSERT", transactional = true) {
         onException { event, throwable ->
-            CustomInstrumentEventReply.InstrumentEventAck(throwable.message!!)
+            CustomInstrumentEventReply.InstrumentEventNack(throwable.message!!)
         }
         onValidate {
             val instrumentEvent = it.details
