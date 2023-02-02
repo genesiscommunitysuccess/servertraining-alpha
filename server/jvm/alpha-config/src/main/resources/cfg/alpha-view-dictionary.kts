@@ -13,11 +13,11 @@ views {
     view("TRADE_VIEW", TRADE) {
 
         joins {
-            joining(COUNTERPARTY) {
-                on(TRADE.COUNTERPARTY_ID to COUNTERPARTY { COUNTERPARTY_ID })
+            joining(COUNTERPARTY, JoinType.INNER) {
+                on(TRADE { COUNTERPARTY_ID } to COUNTERPARTY { COUNTERPARTY_ID })
             }
-            joining(INSTRUMENT) {
-                on(TRADE.INSTRUMENT_ID to INSTRUMENT { INSTRUMENT_ID })
+            joining(INSTRUMENT, JoinType.INNER) {
+                on(TRADE { INSTRUMENT_ID } to INSTRUMENT { INSTRUMENT_ID })
             }
         }
 
