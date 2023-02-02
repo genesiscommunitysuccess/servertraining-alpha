@@ -17,6 +17,14 @@ dataServer {
                 TRADE_VIEW.COUNTERPARTY_ID
             }
         }
+        enrich(FAVOURITE_TRADE) {
+            join { favouriteTradeUserName, row -> FavouriteTrade.byUserName(favouriteTradeUserName) }
+            fields {
+                derivedField("IS_FAVOURITE", BOOLEAN) { row, favourite ->
+                    row.tradeId == favourite?.tradeId
+                }
+            }
+        }
     }
     query("ALL_PRICES", TRADE) {
         fields {

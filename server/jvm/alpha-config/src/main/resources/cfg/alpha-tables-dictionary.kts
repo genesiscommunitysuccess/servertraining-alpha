@@ -78,4 +78,18 @@ tables {
         }
     }
 
+    table(name = "FAVOURITE_TRADE", id = 2005) {
+        sequence(FAVOURITE_TRADE_ID, "FA")
+        TRADE_ID
+        FAVOURITE_TRADE_USER_NAME
+
+        primaryKey {
+            FAVOURITE_TRADE_ID
+        }
+        indices {
+            unique {
+                FAVOURITE_TRADE_USER_NAME
+            }
+        }
+    }
 }
