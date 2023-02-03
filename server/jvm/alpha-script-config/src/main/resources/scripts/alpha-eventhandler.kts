@@ -176,4 +176,14 @@ eventHandler {
             ack()
        }
     }
+
+    eventHandler<TradeAudit>(name = "TRADE_AUDIT_STREAM") {
+        onCommit { event ->
+            val message = event.details
+            stateMachine.modify(entityDb, message.tradeId) { trade ->
+                trade.beenAudited = true
+            }
+            ack()
+        }
+    }
 }

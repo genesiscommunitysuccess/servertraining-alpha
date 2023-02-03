@@ -22,6 +22,7 @@ tables {
         TRADE_DATE
         ENTERED_BY
         TRADE_STATUS
+        BEEN_AUDITED
 
         primaryKey {
             TRADE_ID

@@ -41,5 +41,7 @@ fields {
 
     field("FAVOURITE_TRADE_ID", type = STRING)
     field("FAVOURITE_TRADE_USER_NAME", type = STRING)
+
+    field("BEEN_AUDITED", type = BOOLEAN)
 }
 
