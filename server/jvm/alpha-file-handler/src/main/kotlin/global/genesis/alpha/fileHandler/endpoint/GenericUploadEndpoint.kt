@@ -53,31 +53,41 @@ abstract class GenericUploadEndpoint<T : Any> constructor(
                 LOG.info("FILE_HANDLER: file-name : {} , user {}", uploadedFile.name, "username")
 
                 val genericClass: Class<T> = (this.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0] as Class<T>
+                LOG.info("genericClass is $genericClass")
 
                 val ms: HeaderColumnNameMappingStrategy<*> = HeaderColumnNameMappingStrategy<Any?>()
                 ms.type = genericClass
+
+                LOG.info("uploadedFile.string equals to '{}'", uploadedFile.string)
+
+                val csvRows = CsvToBeanBuilder<Any?>(
+                    CSVReader(
+                        StringReader(uploadedFile.string)
+                    )
+                )
+                .withType(genericClass)
+                .withMappingStrategy(ms)
+                .build()
+                .parse() as List<T>
+                LOG.info("csvRows equals to '{}'", csvRows)
+
+                for (csvRow in csvRows) {
+                    LOG.info("current csvRow is '{}'", csvRow)
+                }
             }
-
-        } catch (ex: ErrorDataDecoderException) {
-            LOG.error("ErrorDataDecoderException: $ex")
-        } catch (ex: Exception) {
-            LOG.error("Exception: $ex")
         }
-        val validationsResponseJson = Gson().toJson(validationsReturn?.validations ?: null).encodeToByteArray()
+        catch (ex: ErrorDataDecoderException) {
+            val errMsg = "ErrorDataDecoderException: $ex"
+            LOG.error(errMsg)
+            return attachmentCommon.errorResponse(errMsg, HttpResponseStatus.INTERNAL_SERVER_ERROR)
+        }
+        catch (ex: Exception) {
+            val errMsg = "Exception: $ex"
+            LOG.error(errMsg)
+            return attachmentCommon.errorResponse(errMsg, HttpResponseStatus.INTERNAL_SERVER_ERROR)
+        }
 
-        val response = DefaultFullHttpResponse(
-            HttpVersion.HTTP_1_1,
-            HttpResponseStatus.OK,
-            Unpooled.wrappedBuffer(
-                validationsResponseJson
-            )
-        )
-
-        HttpUtil.setContentLength(response, validationsResponseJson.size.toLong());
-        response.headers().add(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
-        conn.write(response);
-
-        return response
+        return attachmentCommon.successResponse("File handled successfully for $endpointName")
     }
 
     override fun allowedMethods(): Set<RequestType> {

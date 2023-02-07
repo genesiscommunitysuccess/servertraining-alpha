@@ -43,6 +43,7 @@ include("alpha-dictionary-cache:alpha-generated-hft")
 include("alpha-dictionary-cache:alpha-generated-view")
 include("alpha-deploy")
 include("alpha-site-specific")
+include("alpha-file-handler")
 
 includeBuild("../../client") {
     dependencySubstitution {
