@@ -6,6 +6,7 @@ dependencies {
     api("global.genesis:genesis-pal-consolidator")
     api("global.genesis:genesis-pal-streamer")
     api("global.genesis:genesis-pal-streamerclient")
+    api("global.genesis:genesis-pal-camel")
     api("global.genesis:genesis-pal-eventhandler")
     api("global.genesis:genesis-dataserver2")
     api(project(":alpha-messages"))

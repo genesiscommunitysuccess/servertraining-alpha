@@ -34,6 +34,8 @@ systemDefinition {
         item(name = "EMAIL_SMTP_USER", value = "" )
         item(name = "EMAIL_SMTP_PW", value = "" )
         item(name = "EMAIL_SMTP_PROTOCOL", value = "SMTP")
+
+        item(name = "SYS_DEF_FILE_MAX_SIZE_IN_BITS", value = "32000000")
     }
 
     systems {

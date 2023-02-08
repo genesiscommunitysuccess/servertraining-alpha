@@ -75,6 +75,7 @@
         <description>Notify Mechanism for sending messages to external systems, such as Email and Symphony</description>
     </process>
     <process name="ALPHA_STREAMER">
+        <groupId>ALPHA</groupId>
         <start>true</start>
         <options>-Xmx128m -DXSD_VALIDATE=false</options>
         <module>genesis-pal-streamer</module>
@@ -89,5 +90,18 @@
         <package>global.genesis.streamerclient.pal</package>
         <script>alpha-streamer-client.kts</script>
         <language>pal</language>
+    </process>
+    <process name="ALPHA_CAMEL">
+        <groupId>ALPHA</groupId>
+        <primaryOnly>true</primaryOnly>
+        <start>true</start>
+        <options>-Xmx2048m -DXSD_VALIDATE=false -DRedirectStreamsToLog=true</options>
+        <module>genesis-pal-camel</module>
+        <package>global.genesis.camel</package>
+        <script>alpha-camel.kts</script>
+        <loggingLevel>INFO,DATADUMP_OFF</loggingLevel>
+        <description>Handles inbound/outbound file consumption/production</description>
+        <language>pal</language>
+        <classpath>alpha-event*,camel-activemq-*</classpath>
     </process>
 </processes>
