@@ -11,6 +11,7 @@
 !
 -->
 <processes>
+    <!--
     <process name="ALPHA_DATASERVER">
         <groupId>ALPHA</groupId>
         <start>true</start>
@@ -91,17 +92,16 @@
         <script>alpha-streamer-client.kts</script>
         <language>pal</language>
     </process>
+    -->
     <process name="ALPHA_CAMEL">
         <groupId>ALPHA</groupId>
-        <primaryOnly>true</primaryOnly>
         <start>true</start>
-        <options>-Xmx512m -DXSD_VALIDATE=false -DRedirectStreamsToLog=true</options>
+        <options>-Xmx256m -DRedirectStreamsToLog=true -DXSD_VALIDATE=false</options>
         <module>genesis-pal-camel</module>
-        <package>global.genesis.camel</package>
+        <package>global.genesis.camel.pal</package>
         <script>alpha-camel.kts</script>
-        <loggingLevel>INFO,DATADUMP_OFF</loggingLevel>
-        <description>Handles inbound/outbound file consumption/production</description>
+        <description>Alpha Camel integrations</description>
+        <classpath>alpha-messages*,alpha-camel*,alpha-camel-libs*.jar</classpath>
         <language>pal</language>
-        <classpath>alpha-event*,camel-ftp*</classpath>
     </process>
 </processes>

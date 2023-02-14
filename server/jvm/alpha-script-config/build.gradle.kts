@@ -6,12 +6,13 @@ dependencies {
     api("global.genesis:genesis-pal-consolidator")
     api("global.genesis:genesis-pal-streamer")
     api("global.genesis:genesis-pal-streamerclient")
+
     api("global.genesis:genesis-camel")
     api("global.genesis:genesis-pal-camel")
-    api("org.apache.camel:camel-core:3.14.2")
-    api("org.apache.camel:camel-ftp:3.14.2")
-    api("org.apache.camel:camel-jsch:3.14.2")
-    api("com.jcraft:jsch:0.1.55")
+    api("org.apache.camel:camel-core")
+    api("org.apache.camel:camel-ftp")
+
+
     api("global.genesis:genesis-pal-eventhandler")
     api("global.genesis:genesis-dataserver2")
     api(project(":alpha-messages"))

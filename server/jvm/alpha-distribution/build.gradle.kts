@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":alpha-messages"))
     implementation(project(":alpha-script-config"))
     implementation(project(":alpha-file-handler"))
+    implementation(project(":alpha-camel-libs"))
 }
 
 description = "alpha-distribution"

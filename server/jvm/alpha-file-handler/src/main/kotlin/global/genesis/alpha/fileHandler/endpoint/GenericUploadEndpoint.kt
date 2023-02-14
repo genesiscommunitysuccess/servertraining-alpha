@@ -6,6 +6,7 @@ import com.opencsv.bean.CsvToBeanBuilder
 import com.opencsv.bean.HeaderColumnNameMappingStrategy
 import global.genesis.alpha.fileHandler.helper.FileHelper
 import global.genesis.db.rx.entity.multi.AsyncMultiEntityReadWriteGenericSupport
+import global.genesis.gen.dao.Instrument
 import global.genesis.router.server.web.http.extensions.RequestType
 import global.genesis.router.server.web.http.extensions.WebEndpoint
 import global.genesis.router.server.web.http.extensions.WebEndpointRegistry
@@ -73,6 +74,23 @@ abstract class GenericUploadEndpoint<T : Any> constructor(
 
                 for (csvRow in csvRows) {
                     LOG.info("current csvRow is '{}'", csvRow)
+                    when (genericClass.toString()) {
+                        "Instrument" -> {
+                            val newInstrument = Instrument.builder()
+                                .setInstrumentId("")
+                                .setInstrumentName("")
+                                .setMarketId("")
+                                .setCountryCode("")
+                                .setCurrencyId("")
+                                .setAssetClass("")
+                                .build()
+                            //entityDb.insert(newInstrument)
+                        }
+                        "Counterparty" -> print("x == 2")
+                        else -> { // Note the block
+                            print("No class definition found")
+                        }
+                    }
                 }
             }
         }

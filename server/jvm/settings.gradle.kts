@@ -29,7 +29,7 @@ pluginManagement {
 }
 
 
-
+include("alpha-camel-libs")
 include("alpha-config")
 include("alpha-messages")
 include("alpha-eventhandler")

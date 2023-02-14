@@ -36,6 +36,14 @@ systemDefinition {
         item(name = "EMAIL_SMTP_PROTOCOL", value = "SMTP")
 
         item(name = "SYS_DEF_FILE_MAX_SIZE_IN_BITS", value = "32000000")
+
+        // SFTP
+        item(name = "SFTP_SERVER", value = "localhost")
+        item(name = "SFTP_PORT", value = "22")
+        item(name = "SFTP_USERNAME", value = "JohnDoe")
+        item(name = "SFTP_PASSWORD", value = "Password11*")
+        item(name = "SFTP_FILE_FROM", value = "folder-inside-sftp/from.txt")
+        item(name = "SFTP_FILE_TO", value = "to.txt")
     }
 
     systems {

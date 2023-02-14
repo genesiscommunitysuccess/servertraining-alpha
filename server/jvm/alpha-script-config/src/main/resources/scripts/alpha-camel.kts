@@ -1,30 +1,69 @@
-import java.io.File
 import global.genesis.commons.standards.GenesisPaths
+import org.apache.camel.Exchange
 import org.apache.camel.support.processor.idempotent.FileIdempotentRepository
+import java.io.File
 
 camel {
+    // read from sftp
     routeHandler {
-        val bbgEndPointPath = systemDefinition.getItem("BBG_SERVER_SFTP")
-        val bbgUserName = systemDefinition.getItem("BBG_SERVER_USERNAME")
-        val bbgPassword = systemDefinition.getItem("BBG_SERVER_PASSWORD")
-        val bbgFileName = systemDefinition.getItem("BBG_SERVER_FILENAME")
-        val pathStr = "${GenesisPaths.genesisHome()}/runtime/inbound"
-        val bbgConsumerRepo = "${pathStr}/IDEMPOTENT_CONSUMER.DATA"
+        val pathFromSftp = "${GenesisPaths.runtime()}/inbound/"
+        val pathToSftp = "${GenesisPaths.runtime()}/outbound/"
+        LOG.info("#### About to create or make sure the dirs are there: '$pathFromSftp' and '$pathToSftp' ####")
+        try {
+            File(pathFromSftp).mkdirs()
+            File(pathToSftp).mkdirs()
+        } catch (e: Exception) {
+            LOG.error("Error on create folders - ${e.message}", e)
+        }
 
-        from("sftp:${bbgEndPointPath}?username=${bbgUserName}&password=${bbgPassword}&include=$${bbgFileName}" +
-                "&delay=1000&sortBy=file:modified&delete=false&bridgeErrorHandler=true" +
-                "&knownHostsFile=/home/priss/.ssh/known_hosts&throwExceptionOnConnectFailed=true&stepwise=false")
-            .idempotentConsumer(header("CamelFileName"),
-                FileIdempotentRepository.fileIdempotentRepository(File(bbgConsumerRepo), 300000, 15000000))
+        val sftpServer = systemDefinition.get("SFTP_SERVER").get()
+        val sftpPort = systemDefinition.get("SFTP_PORT").get()
+        val sftpUserName = systemDefinition.get("SFTP_USERNAME").get()
+        val sftpPassword = systemDefinition.get("SFTP_PASSWORD").get()
+        val fromSftpFileName = systemDefinition.get("SFTP_FILE_FROM").get()
+        val toSftpFileName = systemDefinition.get("SFTP_FILE_TO").get()
+
+        //Handles sFTP file transfer
+        val fromSftpIdempotentRepo = "${GenesisPaths.runtime()}/inbound/FROM_SFTP_IDEMPOTENT_CONSUMER.DATA"
+
+        LOG.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        LOG.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        LOG.info("fromSftpFileName = $fromSftpFileName")
+        LOG.info("fromSftpIdempotentRepo = $fromSftpIdempotentRepo")
+
+        from(
+            "sftp:" + sftpServer + ":" + sftpPort + "?username=" + sftpUserName + "&password=" + sftpPassword + "&include=" + fromSftpFileName +
+                    "&delay=1000&sortBy=file:modified&delete=false&bridgeErrorHandler=true" +
+                    "&throwExceptionOnConnectFailed=true&stepwise=false" // &knownHostsFile=/home/<APP_USER>/.ssh/known_hosts
+        )
+            .idempotentConsumer(
+                header("CamelFileName"),
+                FileIdempotentRepository.fileIdempotentRepository(File(fromSftpIdempotentRepo), 300000, 15000000)
+            )
             .process { exchange ->
-                LOG.debug("SFTP copy CamelFileName = ${exchange.`in`.getHeader("CamelFileNameOnly").toString()}")
+                LOG.info("sFTP file = {}", exchange.getIn().getHeader(Exchange.FILE_NAME_ONLY).toString())
             }
-            .log("BBG file transfer: \${headers.CamelFileName}")
-            .to("file:${pathStr}/bbg")
-    }
+            .log("Fetched file from sFTP: \${headers.CamelFileName}")
+            .to("file:$pathFromSftp")
 
-    routeHandler {
-        from("file:/directory/to/watch")
-            .to("sftp://remote-host:22/remote-path?username=user&password=pass")
+        val toSftpIdempotentRepo = "${GenesisPaths.runtime()}/outbound/TO_SFTP_IDEMPOTENT_CONSUMER.DATA"
+        LOG.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        LOG.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        LOG.info("toSftpIdempotentRepo = $toSftpIdempotentRepo")
+
+        from(
+            "file:" + pathToSftp + "&include=" + toSftpFileName +
+                    "&delay=1000&sortBy=file:modified&delete=false&bridgeErrorHandler=true" +
+                    "&throwExceptionOnConnectFailed=true&stepwise=false"
+        )
+            .idempotentConsumer(
+                header("CamelFileName"),
+                FileIdempotentRepository.fileIdempotentRepository(File(toSftpIdempotentRepo), 300000, 15000000)
+            )
+            .process { exchange ->
+                LOG.info("local file = {}", exchange.getIn().getHeader(Exchange.FILE_NAME_ONLY).toString())
+            }
+            .log("Fetched file from sFTP: \${headers.CamelFileName}")
+            .to("sftp:$sftpServer:$sftpPort?username=$sftpUserName&password=$sftpPassword")
     }
 }
