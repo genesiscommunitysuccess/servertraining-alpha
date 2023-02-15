@@ -7,10 +7,8 @@ dependencies {
     api("global.genesis:genesis-pal-streamer")
     api("global.genesis:genesis-pal-streamerclient")
 
-    api("global.genesis:genesis-camel")
     api("global.genesis:genesis-pal-camel")
     api("org.apache.camel:camel-core")
-    api("org.apache.camel:camel-ftp")
 
 
     api("global.genesis:genesis-pal-eventhandler")
