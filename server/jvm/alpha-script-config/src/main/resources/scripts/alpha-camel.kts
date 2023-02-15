@@ -4,7 +4,7 @@ import java.io.File
 
 camel {
     routeHandler {
-        val endPointPath = "localhost:22/"
+        val endPointPath = systemDefinition.getItem("SFTP_PATH")
         val userName = systemDefinition.getItem("SFTP_USERNAME")
         val password = systemDefinition.getItem("SFTP_PASSWORD")
         val fileName = systemDefinition.getItem("SFTP_FILE_FROM")
