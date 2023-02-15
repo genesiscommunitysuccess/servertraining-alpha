@@ -41,7 +41,7 @@ systemDefinition {
         item(name = "SFTP_SERVER", value = "localhost")
         item(name = "SFTP_PORT", value = "22")
         item(name = "SFTP_USERNAME", value = "JohnDoe")
-        item(name = "SFTP_PASSWORD", value = "Password11*")
+        item(name = "SFTP_PASSWORD", value = "Password11")
         item(name = "SFTP_FILE_FROM", value = "folder-inside-sftp/from.txt")
         item(name = "SFTP_FILE_TO", value = "to.txt")
     }
