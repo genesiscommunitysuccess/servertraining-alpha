@@ -38,7 +38,7 @@ systemDefinition {
         item(name = "SYS_DEF_FILE_MAX_SIZE_IN_BITS", value = "32000000")
 
         // SFTP
-        item(name = "SFTP_PATH", value = "localhost:22/")
+        item(name = "SFTP_PATH", value = "sftp:22/")
         item(name = "SFTP_USERNAME", value = "JohnDoe")
         item(name = "SFTP_PASSWORD", value = "Password11")
         item(name = "SFTP_FILE_FROM", value = "folder-inside-sftp/from.txt")

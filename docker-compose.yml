@@ -2,7 +2,7 @@ version: '3.3'
 services:
   gsf:
     tty: true
-    container_name: gsf
+    container_name: servertraining_gsf
     build:
       context: server/jvm/
       dockerfile: Dockerfile
@@ -22,14 +22,14 @@ services:
     ports:
       - '8080:80'
       - '443:443'
-    container_name: nginx
+    container_name: servertraining_nginx
     build:
       context: server/nginx/
       dockerfile: Dockerfile
     networks:
       - qs_network
   frontend:
-    container_name: frontend
+    container_name: servertraining_frontend
     build:
       context: client/
       dockerfile: Dockerfile
@@ -41,7 +41,9 @@ services:
     networks:
       - qs_network
   sftp:
+    container_name: servertraining_sftp
     image: atmoz/sftp
+    hostname: sftp
     ports:
       - '22:22'
     command: JohnDoe:Password11:::folder-inside-sftp
@@ -50,3 +52,4 @@ services:
 networks:
   qs_network:
     driver: bridge
+
