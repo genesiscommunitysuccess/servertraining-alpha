@@ -11,7 +11,6 @@
 !
 -->
 <processes>
-    <!--
     <process name="ALPHA_DATASERVER">
         <groupId>ALPHA</groupId>
         <start>true</start>
@@ -23,6 +22,7 @@
         <language>pal</language>
         <loggingLevel>DEBUG,DATADUMP_ON</loggingLevel>
     </process>
+    <!--
     <process name="ALPHA_EVENT_HANDLER">
         <groupId>ALPHA</groupId>
         <start>true</start>

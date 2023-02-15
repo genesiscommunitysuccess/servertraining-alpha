@@ -40,6 +40,13 @@ services:
     entrypoint: [ "/bin/bash" , "-c", "npm run dev:docker && tail -f /dev/null" ]
     networks:
       - qs_network
+  sftp:
+    image: atmoz/sftp
+    ports:
+      - '22:22'
+    command: JohnDoe:Password11:::folder-inside-sftp
+    networks:
+      - qs_network
 networks:
   qs_network:
     driver: bridge
