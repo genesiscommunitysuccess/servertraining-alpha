@@ -41,8 +41,8 @@ systemDefinition {
         item(name = "SFTP_PATH", value = "sftp:22/")
         item(name = "SFTP_USERNAME", value = "JohnDoe")
         item(name = "SFTP_PASSWORD", value = "Password11")
-        item(name = "SFTP_FILE_FROM", value = "folder-inside-sftp/from.txt")
-        item(name = "SFTP_FILE_TO", value = "/home/alpha/run/runtime/outbound/to.txt")
+        item(name = "SFTP_DIRECTORY", value = "folder-inside-sftp")
+        item(name = "SFTP_FILE", value = "from.txt")
     }
 
     systems {
