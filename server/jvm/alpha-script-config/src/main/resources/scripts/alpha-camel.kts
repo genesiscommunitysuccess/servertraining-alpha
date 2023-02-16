@@ -1,26 +1,48 @@
+import java.io.File
 import global.genesis.commons.standards.GenesisPaths
 import org.apache.camel.support.processor.idempotent.FileIdempotentRepository
-import java.io.File
 
 camel {
-    routeHandler {
-        val endPointPath = systemDefinition.getItem("SFTP_PATH")
-        val userName = systemDefinition.getItem("SFTP_USERNAME")
-        val password = systemDefinition.getItem("SFTP_PASSWORD")
-        val fileName = systemDefinition.getItem("SFTP_FILE_FROM")
-        val pathStr = "${GenesisPaths.genesisHome()}/runtime/inbound"
-        val consumerRepo = "${pathStr}/IDEMPOTENT_CONSUMER.DATA"
+    val pathFromSftp = "${GenesisPaths.runtime()}/inbound/"
+    val pathToSftp = "${GenesisPaths.runtime()}/outbound/"
+    LOG.info("#### About to create or make sure the dirs are there: '$pathFromSftp' and '$pathToSftp' ####")
+    try {
+        File(pathFromSftp).mkdirs()
+        File(pathToSftp).mkdirs()
+        LOG.info("#### Dirs are created as defined: '$pathFromSftp' and '$pathToSftp' ####")
+    } 
+    catch (e: Exception) {
+        LOG.error("Error on create folders - ${e.message}", e)
+    }
 
-        LOG.info("About to start the 'Reading from an SFTP server' process")
-        from("sftp://${userName}:${password}@${endPointPath}?include=${fileName}" +
+	val endPointPath = systemDefinition.getItem("SFTP_PATH")
+	val userName = systemDefinition.getItem("SFTP_USERNAME")
+	val password = systemDefinition.getItem("SFTP_PASSWORD")
+
+    routeHandler {
+		val fileNameFrom = systemDefinition.getItem("SFTP_FILE_FROM")
+		val pathStrInbound = "${GenesisPaths.genesisHome()}/runtime/inbound"
+        val consumerRepo = "${pathStrInbound}/IDEMPOTENT_CONSUMER.DATA"
+
+		LOG.info("Reading from an SFTP server :: '${fileNameFrom}' to '${pathStrInbound}/alpha'")
+        from("sftp:${endPointPath}?username=${userName}&password=${password}&include=${fileNameFrom}" +
                 "&delay=1000&sortBy=file:modified&delete=false&bridgeErrorHandler=true" +
-                "&throwExceptionOnConnectFailed=true&stepwise=false")
+                "&knownHostsFile=/home/alpha/.ssh/known_hosts&throwExceptionOnConnectFailed=true&stepwise=false")
             .idempotentConsumer(header("CamelFileName"),
                 FileIdempotentRepository.fileIdempotentRepository(File(consumerRepo), 300000, 15000000))
             .process { exchange ->
                 LOG.info("SFTP copy CamelFileName = ${exchange.`in`.getHeader("CamelFileNameOnly").toString()}")
             }
-            .log("file transfer: \${headers.CamelFileName}")
-            .to("file:${pathStr}")
+            .log("ALPHA file transfer: \${headers.CamelFileName}")
+            .to("file:${pathStrInbound}/alpha")
+    }
+
+    routeHandler {
+		//val fileNameTo = systemDefinition.getItem("SFTP_FILE_TO")
+		val fileNameTo = "/home/alpha/run/runtime/outbound/to.txt" 
+		
+		LOG.info("Writing to an SFTP server :: '${fileNameTo}' to 'sftp:${endPointPath}?username=${userName}&password=${password}'")
+        from("file:${fileNameTo}")
+            .to("sftp:${endPointPath}?username=${userName}&password=${password}")
     }
 }
