@@ -2,52 +2,36 @@ package global.genesis.alpha.fileHandler.helper
 
 import com.google.inject.Inject
 import com.google.inject.name.Named
-import global.genesis.alpha.fileHandler.exception.FileEndpointException
 import global.genesis.db.rx.entity.multi.RxEntityDb
 import global.genesis.gen.dao.UserSession
+import global.genesis.alpha.fileHandler.exception.FileEndpointException
 import io.netty.buffer.Unpooled
 import io.netty.handler.codec.http.*
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import io.netty.handler.codec.http.HttpVersion.HTTP_1_1
 
 @global.genesis.commons.annotation.Module
-class FileHelper @Inject constructor(
-    @Named(SYS_DEF_FILE_MAX_SIZE_IN_BITS) sysdefPayloadMaxSize: Long,
-    private val db: RxEntityDb,
-) {
+class FileHelper {
     var maxFileSize: Long = 0
+    private var db: RxEntityDb? = null
 
-    init {
+    @Inject
+    fun AttachmentCommon(@Named(SYS_DEF_ATTACHMENT_MAX_SIZE_IN_BITS) sysdefPayloadMaxSize: Long, db: RxEntityDb?) {
+        this.db = db
         setupMaxPayloadSize(sysdefPayloadMaxSize)
     }
 
     @Throws(FileEndpointException::class)
     fun getValidatedUserName(sessionAuthToken: String): String {
-        val foundUserSession = db.get(UserSession.BySessionAuthToken(sessionAuthToken)).blockingGet()
-        return foundUserSession?.userName
-            ?: throw FileEndpointException("No session found for auth token",
-                HttpResponseStatus.BAD_REQUEST)
+        val foundUserSession: UserSession = db!!.get(UserSession.BySessionAuthToken(sessionAuthToken)).blockingGet()
+        return foundUserSession.userName
     }
 
     fun errorResponse(e: FileEndpointException): DefaultFullHttpResponse {
-        val responseJson = ("{\"ERROR\": \"" + e.message + "\"}").toByteArray()
+        val responseJson: ByteArray = ("{\"ERROR\": \"" + e.message + "\"}").toByteArray()
         val responseBuffer = Unpooled.wrappedBuffer(responseJson)
         val response = DefaultFullHttpResponse(
-            HttpVersion.HTTP_1_1,
-            e.getHttpResponseStatus(),
-            responseBuffer
-        )
-        response.headers().add(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
-        HttpUtil.setContentLength(response, responseJson.size.toLong())
-        return response
-    }
-
-    fun errorResponse(errorMsg: String, errorResponseStatus: HttpResponseStatus?): DefaultFullHttpResponse {
-        val responseJson = "{\"ERROR\": \"$errorMsg\"}".toByteArray()
-        val responseBuffer = Unpooled.wrappedBuffer(responseJson)
-        val response = DefaultFullHttpResponse(
-            HttpVersion.HTTP_1_1,
-            errorResponseStatus,
+            HTTP_1_1,
+            e.httpResponseStatus,
             responseBuffer
         )
         response.headers().add(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
@@ -59,7 +43,7 @@ class FileHelper @Inject constructor(
         val responseJson = "{\"SUCCESS\": \"$responseText\"}".toByteArray()
         val responseBuffer = Unpooled.wrappedBuffer(responseJson)
         val response = DefaultFullHttpResponse(
-            HttpVersion.HTTP_1_1,
+            HTTP_1_1,
             HttpResponseStatus.OK,
             responseBuffer
         )
@@ -68,20 +52,22 @@ class FileHelper @Inject constructor(
         return response
     }
 
-    private fun setupMaxPayloadSize(sysdefPayloadMaxSize: Long?) {
-        maxFileSize = if (sysdefPayloadMaxSize == null) {
-            LOG.warn("System Definition Item {} not defined. Using default value 1Mb!",
-                SYS_DEF_FILE_MAX_SIZE_IN_BITS
-            )
-            1000000L // Default is 1 Mb
-        } else {
-            sysdefPayloadMaxSize
+    fun maxFileSize() : Long {
+        return maxFileSize
+    }
+
+    private fun setupMaxPayloadSize(sysdefPayloadMaxSize: Long) {
+        if (sysdefPayloadMaxSize == null) {
+            maxFileSize = 1000000L // Default is 1 Mb
+        }
+        else {
+            maxFileSize = sysdefPayloadMaxSize
         }
     }
 
     companion object {
-        private val LOG: Logger = LoggerFactory.getLogger(FileHelper::class.java)
-        const val ATTACHMENT_PATH = "file-handler"
-        private const val SYS_DEF_FILE_MAX_SIZE_IN_BITS = "SYS_DEF_FILE_MAX_SIZE_IN_BITS"
+        const val INSTRUMENT_PATH = "instrument-handler"
+        const val COUNTERPARTY_PATH = "counterparty-handler"
+        private const val SYS_DEF_ATTACHMENT_MAX_SIZE_IN_BITS = "SYS_DEF_FILE_MAX_SIZE_IN_BITS"
     }
 }
