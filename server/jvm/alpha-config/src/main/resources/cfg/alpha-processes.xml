@@ -22,7 +22,6 @@
         <language>pal</language>
         <loggingLevel>DEBUG,DATADUMP_ON</loggingLevel>
     </process>
-    <!--
     <process name="ALPHA_EVENT_HANDLER">
         <groupId>ALPHA</groupId>
         <start>true</start>
@@ -92,7 +91,7 @@
         <script>alpha-streamer-client.kts</script>
         <language>pal</language>
     </process>
-    -->
+    <!--
     <process name="ALPHA_CAMEL">
         <groupId>ALPHA</groupId>
         <start>true</start>
@@ -104,4 +103,5 @@
         <classpath>alpha-messages*,alpha-camel*,alpha-camel-libs*.jar</classpath>
         <language>pal</language>
     </process>
+    -->
 </processes>
