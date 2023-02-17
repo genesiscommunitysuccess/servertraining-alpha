@@ -2,6 +2,9 @@ package global.genesis.alpha.fileHandler.endpoint
 
 import com.google.common.collect.ImmutableSet
 import com.google.inject.Inject
+import com.opencsv.CSVReader
+import com.opencsv.bean.CsvToBeanBuilder
+import global.genesis.alpha.fileHandler.csvmapper.InstrumentMapper
 import global.genesis.alpha.fileHandler.exception.FileEndpointException
 import global.genesis.alpha.fileHandler.helper.FileHelper
 import global.genesis.commons.annotation.Module
@@ -17,6 +20,7 @@ import io.netty.handler.codec.http.HttpResponseStatus
 import io.netty.handler.codec.http.multipart.*
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
+import java.io.StringReader
 import javax.annotation.PostConstruct
 
 
@@ -71,29 +75,29 @@ class InstrumentUploadEndpoint @Inject constructor(
 
                 //Parse out all the data we need
                 for (data in postData) {
-                    // General Post Content
-                    if (data.httpDataType == InterfaceHttpData.HttpDataType.Attribute) {
-                        val attribute = data as MemoryAttribute
-                        LOG.info("InstrumentUploadEndpoint INFO :: attribute {}", attribute)
-                        LOG.info("InstrumentUploadEndpoint INFO :: attribute.getName() {}", attribute.name)
-                        LOG.info("InstrumentUploadEndpoint INFO :: attribute.getValue() {}", attribute.value)
-                    }
-                    else if (data.httpDataType == InterfaceHttpData.HttpDataType.FileUpload) {
-                        // File Uploaded
-                        val fileUpload = data as MemoryFileUpload
-                        uploadedFiles.add(fileUpload)
-                        LOG.info("InstrumentUploadEndpoint INFO :: File-{} file-name : {}", uploadedFiles.size, fileUpload.name)
-                    }
+                    // File Uploaded
+                    val fileUpload = data as MemoryFileUpload
+                    uploadedFiles.add(fileUpload)
+                    LOG.info("InstrumentUploadEndpoint INFO :: File-{} file-name : {}", uploadedFiles.size, fileUpload.name)
                 }
                 if (uploadedFiles.size == 0) {
                     LOG.error("InstrumentUploadEndpoint ERROR :: No file uploaded with request")
                     throw FileEndpointException("No file uploaded", HttpResponseStatus.BAD_REQUEST)
                 }
-                val uploadTime = DateTime()
+
                 for (uploadedFile in uploadedFiles) {
-                    LOG.info("InstrumentUploadEndpoint INFO :: uploadedFile {}", uploadedFile)
-                    val instrumentRecord = getInstrument(uploadTime, username)
-                    updateDb(instrumentRecord)
+                    LOG.info("InstrumentUploadEndpoint INFO :: about to build and parse file '{}' into List<InstrumentMapper>", uploadedFile)
+                    val csvInstruments = CsvToBeanBuilder<Any?>(
+                        CSVReader(
+                            StringReader(uploadedFile.string)
+                        )
+                    ).build().parse() as List<InstrumentMapper>
+
+                    for (instrument in csvInstruments) {
+                        val instrumentRecord = getInstrument(instrument.INSTRUMENT_ID, instrument.INSTRUMENT_NAME, instrument.MARKET_ID, instrument.COUNTRY_CODE, instrument.CURRENCY_ID, instrument.ASSET_CLASS)
+                        updateDb(instrumentRecord)
+                        LOG.info("InstrumentUploadEndpoint INFO :: updateDb(instrument) '{}'", instrumentRecord)
+                    }
                 }
             }
             catch (ex: HttpPostRequestDecoder.ErrorDataDecoderException) {
@@ -119,15 +123,15 @@ class InstrumentUploadEndpoint @Inject constructor(
     }
 
     // Turn the received request meta into a dao DB record for writing
-    private fun getInstrument(uploadTime: DateTime, userName: String): Instrument {
+    private fun getInstrument(instrumentId : String, instrumentName : String, marketId : String, countryCode : String, currencyId : String, assetClass : String): Instrument {
         //need a way to programmatically set these
         return Instrument.builder()
-            .setInstrumentId("")
-            .setInstrumentName("")
-            .setMarketId("")
-            .setCountryCode("")
-            .setCurrencyId("")
-            .setAssetClass("")
+            .setInstrumentId(instrumentId)
+            .setInstrumentName(instrumentName)
+            .setMarketId(marketId)
+            .setCountryCode(countryCode)
+            .setCurrencyId(currencyId)
+            .setAssetClass(assetClass)
             .build()
     }
 

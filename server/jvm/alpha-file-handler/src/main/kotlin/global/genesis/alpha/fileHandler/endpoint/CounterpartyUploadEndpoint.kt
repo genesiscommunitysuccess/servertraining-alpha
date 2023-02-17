@@ -2,6 +2,9 @@ package global.genesis.alpha.fileHandler.endpoint
 
 import com.google.common.collect.ImmutableSet
 import com.google.inject.Inject
+import com.opencsv.CSVReader
+import com.opencsv.bean.CsvToBeanBuilder
+import global.genesis.alpha.fileHandler.csvmapper.CounterpartyMapper
 import global.genesis.alpha.fileHandler.exception.FileEndpointException
 import global.genesis.alpha.fileHandler.helper.FileHelper
 import global.genesis.commons.annotation.Module
@@ -17,6 +20,7 @@ import io.netty.handler.codec.http.HttpResponseStatus
 import io.netty.handler.codec.http.multipart.*
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
+import java.io.StringReader
 import javax.annotation.PostConstruct
 
 
@@ -71,29 +75,29 @@ class CounterpartyUploadEndpoint @Inject constructor(
 
                 //Parse out all the data we need
                 for (data in postData) {
-                    // General Post Content
-                    if (data.httpDataType == InterfaceHttpData.HttpDataType.Attribute) {
-                        val attribute = data as MemoryAttribute
-                        LOG.info("CounterpartyUploadEndpoint INFO :: attribute {}", attribute)
-                        LOG.info("CounterpartyUploadEndpoint INFO :: attribute.getName() {}", attribute.name)
-                        LOG.info("CounterpartyUploadEndpoint INFO :: attribute.getValue() {}", attribute.value)
-                    }
-                    else if (data.httpDataType == InterfaceHttpData.HttpDataType.FileUpload) {
-                        // File Uploaded
-                        val fileUpload = data as MemoryFileUpload
-                        uploadedFiles.add(fileUpload)
-                        LOG.info("CounterpartyUploadEndpoint INFO :: File-{} file-name : {}", uploadedFiles.size, fileUpload.name)
-                    }
+                    // File Uploaded
+                    val fileUpload = data as MemoryFileUpload
+                    uploadedFiles.add(fileUpload)
+                    LOG.info("CounterpartyUploadEndpoint INFO :: File-{} file-name : {}", uploadedFiles.size, fileUpload.name)
                 }
                 if (uploadedFiles.size == 0) {
                     LOG.error("CounterpartyUploadEndpoint ERROR :: No file uploaded with request")
                     throw FileEndpointException("No file uploaded", HttpResponseStatus.BAD_REQUEST)
                 }
-                val uploadTime = DateTime()
+
                 for (uploadedFile in uploadedFiles) {
-                    LOG.info("CounterpartyUploadEndpoint INFO :: uploadedFile {}", uploadedFile)
-                    val counterpartyRecord = getCounterparty(uploadTime, username)
-                    updateDb(counterpartyRecord)
+                    LOG.info("CounterpartyUploadEndpoint INFO :: about to build and parse file '{}' into List<CounterpartyMapper>", uploadedFile)
+                    val csvCounterpartys = CsvToBeanBuilder<Any?>(
+                        CSVReader(
+                            StringReader(uploadedFile.string)
+                        )
+                    ).build().parse() as List<CounterpartyMapper>
+
+                    for (counterparty in csvCounterpartys) {
+                        val counterpartyRecord = getCounterparty(counterparty.COUNTERPARTY_ID, counterparty.COUNTERPARTY_NAME, counterparty.ENABLED, counterparty.COUNTERPARTY_LEI)
+                        updateDb(counterpartyRecord)
+                        LOG.info("CounterpartyUploadEndpoint INFO :: updateDb(counterparty) '{}'", counterpartyRecord)
+                    }
                 }
             }
             catch (ex: HttpPostRequestDecoder.ErrorDataDecoderException) {
@@ -119,11 +123,13 @@ class CounterpartyUploadEndpoint @Inject constructor(
     }
 
     // Turn the received request meta into a dao DB record for writing
-    private fun getCounterparty(uploadTime: DateTime, userName: String): Counterparty {
+    private fun getCounterparty(counterpartyId : String, counterpartyName : String, enabled : String, counterpartyLei : String): Counterparty {
         //need a way to programmatically set these
         return Counterparty.builder()
-            .setCounterpartyId("")
-            .setCounterpartyName("")
+            .setCounterpartyId(counterpartyId)
+            .setCounterpartyName(counterpartyName)
+            .setEnabled(enabled.toBoolean())
+            .setCounterpartyLei(counterpartyLei)
             .build()
     }
 
