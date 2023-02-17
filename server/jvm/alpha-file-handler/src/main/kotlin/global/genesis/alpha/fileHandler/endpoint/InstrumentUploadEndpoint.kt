@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet
 import com.google.inject.Inject
 import com.opencsv.CSVReader
 import com.opencsv.bean.CsvToBeanBuilder
+import com.opencsv.bean.HeaderColumnNameMappingStrategy
 import global.genesis.alpha.fileHandler.csvmapper.InstrumentMapper
 import global.genesis.alpha.fileHandler.exception.FileEndpointException
 import global.genesis.alpha.fileHandler.helper.FileHelper
@@ -21,6 +22,7 @@ import io.netty.handler.codec.http.multipart.*
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.io.StringReader
+import java.lang.reflect.ParameterizedType
 import javax.annotation.PostConstruct
 
 
@@ -87,11 +89,20 @@ class InstrumentUploadEndpoint @Inject constructor(
 
                 for (uploadedFile in uploadedFiles) {
                     LOG.info("InstrumentUploadEndpoint INFO :: about to build and parse file '{}' into List<InstrumentMapper>", uploadedFile)
+
+                    val genericClass = InstrumentMapper::class.java
+                    val ms: HeaderColumnNameMappingStrategy<*> = HeaderColumnNameMappingStrategy<Any?>()
+                    ms.type = genericClass
+
                     val csvInstruments = CsvToBeanBuilder<Any?>(
                         CSVReader(
                             StringReader(uploadedFile.string)
                         )
-                    ).build().parse() as List<InstrumentMapper>
+                    )
+                    .withType(genericClass)
+                    .withMappingStrategy(ms)
+                    .build()
+                    .parse() as List<InstrumentMapper>
 
                     for (instrument in csvInstruments) {
                         val instrumentRecord = getInstrument(instrument.INSTRUMENT_ID, instrument.INSTRUMENT_NAME, instrument.MARKET_ID, instrument.COUNTRY_CODE, instrument.CURRENCY_ID, instrument.ASSET_CLASS)

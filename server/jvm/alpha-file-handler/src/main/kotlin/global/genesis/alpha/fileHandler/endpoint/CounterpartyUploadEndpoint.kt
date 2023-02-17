@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet
 import com.google.inject.Inject
 import com.opencsv.CSVReader
 import com.opencsv.bean.CsvToBeanBuilder
+import com.opencsv.bean.HeaderColumnNameMappingStrategy
 import global.genesis.alpha.fileHandler.csvmapper.CounterpartyMapper
 import global.genesis.alpha.fileHandler.exception.FileEndpointException
 import global.genesis.alpha.fileHandler.helper.FileHelper
@@ -21,6 +22,7 @@ import io.netty.handler.codec.http.multipart.*
 import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import java.io.StringReader
+import java.lang.reflect.ParameterizedType
 import javax.annotation.PostConstruct
 
 
@@ -87,11 +89,20 @@ class CounterpartyUploadEndpoint @Inject constructor(
 
                 for (uploadedFile in uploadedFiles) {
                     LOG.info("CounterpartyUploadEndpoint INFO :: about to build and parse file '{}' into List<CounterpartyMapper>", uploadedFile)
+
+                    val genericClass = CounterpartyMapper::class.java
+                    val ms: HeaderColumnNameMappingStrategy<*> = HeaderColumnNameMappingStrategy<Any?>()
+                    ms.type = genericClass
+
                     val csvCounterpartys = CsvToBeanBuilder<Any?>(
                         CSVReader(
                             StringReader(uploadedFile.string)
                         )
-                    ).build().parse() as List<CounterpartyMapper>
+                    )
+                        .withType(genericClass)
+                        .withMappingStrategy(ms)
+                        .build()
+                        .parse() as List<CounterpartyMapper>
 
                     for (counterparty in csvCounterpartys) {
                         val counterpartyRecord = getCounterparty(counterparty.COUNTERPARTY_ID, counterparty.COUNTERPARTY_NAME, counterparty.ENABLED, counterparty.COUNTERPARTY_LEI)
