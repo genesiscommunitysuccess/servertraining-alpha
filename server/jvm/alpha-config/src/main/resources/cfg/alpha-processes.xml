@@ -53,4 +53,55 @@
         <package>global.genesis.eventhandler,global.genesis.evaluator</package>
         <description>Dynamic/time rules engine</description>
     </process>
+    <process name="ALPHA_DATAPIPELINE">
+        <groupId>ALPHA</groupId>
+        <start>true</start>
+        <options>-Xmx256m -DRedirectStreamsToLog=true -DXSD_VALIDATE=false</options>
+        <module>genesis-pal-datapipeline</module>
+        <package>global.genesis.datapipeline.pal</package>
+        <script>alpha-data-pipeline.kts</script>
+        <description>External data ingress pipeline</description>
+        <language>pal</language>
+        <loggingLevel>TRACE,DATADUMP_ON</loggingLevel>
+    </process>
+    <process name="ALPHA_NOTIFY">
+        <groupId>ALPHA</groupId>
+        <start>true</start>
+        <options>-Xmx128m -DXSD_VALIDATE=false</options>
+        <module>genesis-notify</module>
+        <package>global.genesis.notify</package>
+        <script>genesis-notify.kts</script>
+        <language>pal</language>
+        <description>Notify Mechanism for sending messages to external systems, such as Email and Symphony</description>
+    </process>
+    <process name="ALPHA_STREAMER">
+        <groupId>ALPHA</groupId>
+        <start>true</start>
+        <options>-Xmx128m -DXSD_VALIDATE=false</options>
+        <module>genesis-pal-streamer</module>
+        <package>global.genesis.streamer.pal</package>
+        <script>alpha-streamer.kts</script>
+        <language>pal</language>
+    </process>
+    <process name="ALPHA_STREAMER_CLIENT">
+        <start>true</start>
+        <options>-Xmx128m -DXSD_VALIDATE=false</options>
+        <module>genesis-pal-streamerclient</module>
+        <package>global.genesis.streamerclient.pal</package>
+        <script>alpha-streamer-client.kts</script>
+        <language>pal</language>
+    </process>
+    <!--
+    <process name="ALPHA_CAMEL">
+        <groupId>ALPHA</groupId>
+        <start>true</start>
+        <options>-Xmx256m -DRedirectStreamsToLog=true -DXSD_VALIDATE=false</options>
+        <module>genesis-pal-camel</module>
+        <package>global.genesis.camel.pal</package>
+        <script>alpha-camel.kts</script>
+        <description>Alpha Camel integrations</description>
+        <classpath>alpha-messages*,alpha-camel*,alpha-camel-libs*.jar</classpath>
+        <language>pal</language>
+    </process>
+    -->
 </processes>

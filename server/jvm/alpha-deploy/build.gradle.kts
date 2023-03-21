@@ -7,6 +7,7 @@ description = "alpha-deploy"
 dependencies {
     api(project(":alpha-eventhandler"))
     api(project(":alpha-messages"))
+    api(project(":alpha-file-handler"))
 
     /* dependencies required for building the docker image from the Gradle task */
     genesisServer(
@@ -28,6 +29,10 @@ dependencies {
     genesisWeb("client:web")
     /* --- */
 
+    api(project(":alpha-file-handler"))
+    api(project(":alpha-eventhandler"))
+    api(project(":alpha-messages"))
+    api(project(":alpha-camel-libs"))
     /* Add additional dependencies on other external distributions here */
 }
 tasks {

@@ -9,5 +9,8 @@
  * Modification History
  */
 requestReplies {
-
+    requestReply("ALL_COUNTERPARTIES", COUNTERPARTY_VIEW) {
+        rowReturnLimit = 20
+        timeout = 10
+    }
 }

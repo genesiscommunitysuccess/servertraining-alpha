@@ -1,0 +1,3 @@
+streams {
+    stream("TRADE_AUDIT_STREAM", TRADE_AUDIT.BY_TIMESTAMP)
+}

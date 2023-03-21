@@ -5,8 +5,9 @@ import global.genesis.gen.dao.Trade
 import global.genesis.alpha.message.event.TradeAllocated
 import global.genesis.alpha.message.event.TradeCancelled
 import global.genesis.alpha.message.event.PositionReport
+import global.genesis.alpha.message.event.TradeStandardization
+import global.genesis.alpha.message.event.CustomInstrumentEventReply
 import global.genesis.commons.standards.GenesisPaths
-import global.genesis.gen.dao.repository.PositionAsyncRepository
 import global.genesis.gen.view.repository.TradeViewAsyncRepository
 import global.genesis.jackson.core.GenesisJacksonMapper
 
@@ -21,7 +22,6 @@ import global.genesis.jackson.core.GenesisJacksonMapper
  * Modification History
  */
 val tradeViewRepo = inject<TradeViewAsyncRepository>()
-val positionRepo = inject<PositionAsyncRepository>()
 
 eventHandler {
     val stateMachine = inject<TradeStateMachine>()
@@ -68,8 +68,14 @@ eventHandler {
 
     eventHandler<Counterparty>(name = "COUNTERPARTY_INSERT", transactional = true) {
         onCommit { event ->
-            entityDb.insert(event.details)
-            ack()
+            try {
+                entityDb.insert(event.details)
+                ack()
+            }
+            catch (e: Exception) {
+                val errorMessage = "COUNTERPARTY_INSERT -> Error on adding Counterparty. Error message: ${e.message}. Error cause: ${e.cause}"
+                nack(errorMessage)
+            }
         }
     }
 
@@ -87,10 +93,18 @@ eventHandler {
         }
     }
 
-    eventHandler<Instrument>(name = "INSTRUMENT_INSERT", transactional = true) {
+    eventHandler<Instrument, CustomInstrumentEventReply>(name = "INSTRUMENT_INSERT", transactional = true) {
+        onException { event, throwable ->
+            CustomInstrumentEventReply.InstrumentEventNack(throwable.message!!)
+        }
+        onValidate {
+            val instrumentEvent = it.details
+            require(instrumentEvent.instrumentName!!.length > 2) { "instrumentName needs at least 3 characters" }
+            CustomInstrumentEventReply.InstrumentEventValidateAck()
+        }
         onCommit { event ->
-            entityDb.insert(event.details)
-            ack()
+            val result = entityDb.insert(event.details)
+            CustomInstrumentEventReply.InstrumentEventAck(result.record.instrumentId)
         }
     }
 
@@ -144,6 +158,31 @@ eventHandler {
                     mapper.writeValues(file).use { it.writeAll(trades) }
                 }
 
+            ack()
+        }
+    }
+
+    eventHandler<TradeStandardization>(transactional = true) {
+        onCommit {
+            val tradesNegativePrices = entityDb.
+                getBulk(TRADE).toList()
+                .filter { it.price < 0 }
+
+            tradesNegativePrices.forEach { t ->
+                t.price = 0.0
+            }
+
+            entityDb.modifyAll(*tradesNegativePrices.toList().toTypedArray())
+            ack()
+       }
+    }
+
+    eventHandler<TradeAudit>(name = "TRADE_AUDIT_STREAM") {
+        onCommit { event ->
+            val message = event.details
+            stateMachine.modify(entityDb, message.tradeId) { trade ->
+                trade.beenAudited = true
+            }
             ack()
         }
     }

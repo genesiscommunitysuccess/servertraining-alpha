@@ -17,6 +17,14 @@ dataServer {
                 TRADE_VIEW.COUNTERPARTY_ID
             }
         }
+        enrich(FAVOURITE_TRADE) {
+            join { favouriteTradeUserName, row -> FavouriteTrade.byUserName(favouriteTradeUserName) }
+            fields {
+                derivedField("IS_FAVOURITE", BOOLEAN) { row, favourite ->
+                    row.tradeId == favourite?.tradeId
+                }
+            }
+        }
     }
     query("ALL_PRICES", TRADE) {
         fields {
@@ -29,7 +37,6 @@ dataServer {
             trade.price!! > 0.0
         }
     }
-    query("ALL_COUNTERPARTIES", COUNTERPARTY_VIEW)
     query("ALL_INSTRUMENTS", INSTRUMENT)
     query("ALL_POSITIONS", POSITION)
 }

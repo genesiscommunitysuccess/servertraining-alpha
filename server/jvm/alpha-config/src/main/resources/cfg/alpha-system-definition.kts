@@ -10,7 +10,7 @@
  */
 systemDefinition {
     global {
-
+        item(name = "NULLABILITY_FOR_TRADE_FIELDS", value = false)
     }
 
     systems {

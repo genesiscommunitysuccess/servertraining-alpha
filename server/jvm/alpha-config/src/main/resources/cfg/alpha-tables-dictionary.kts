@@ -11,7 +11,7 @@
 
 tables {
 
-    table (name = "TRADE", id = 2000, audit = details(id = 2100, sequence = "TR")) {
+    table (name = "TRADE", id = 2000, audit = details(id = 2100, sequence = "TR", tsKey = true)) {
         sequence(TRADE_ID, "TR")
         COUNTERPARTY_ID
         INSTRUMENT_ID not null
@@ -22,6 +22,7 @@ tables {
         TRADE_DATE
         ENTERED_BY
         TRADE_STATUS
+        BEEN_AUDITED
 
         primaryKey {
             TRADE_ID
@@ -78,4 +79,18 @@ tables {
         }
     }
 
+    table(name = "FAVOURITE_TRADE", id = 2005) {
+        sequence(FAVOURITE_TRADE_ID, "FA")
+        TRADE_ID
+        FAVOURITE_TRADE_USER_NAME
+
+        primaryKey {
+            FAVOURITE_TRADE_ID
+        }
+        indices {
+            unique {
+                FAVOURITE_TRADE_USER_NAME
+            }
+        }
+    }
 }
