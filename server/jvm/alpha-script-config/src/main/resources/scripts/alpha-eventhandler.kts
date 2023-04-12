@@ -27,6 +27,7 @@ eventHandler {
     val stateMachine = inject<TradeStateMachine>()
 
     eventHandler<Trade>(name = "TRADE_INSERT") {
+        schemaValidation = false
         permissionCodes = listOf("INSERT_TRADE")
         onValidate { event ->
             val message = event.details
