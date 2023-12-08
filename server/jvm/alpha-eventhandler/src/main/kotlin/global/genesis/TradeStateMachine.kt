@@ -36,7 +36,6 @@ class TradeStateMachine @Inject constructor(
         state(TradeStatus.ALLOCATED) {
             isMutable = false
 
-            transition(TradeStatus.NEW, TradeEffect.New)
             transition(TradeStatus.CANCELLED, TradeEffect.Cancelled)
         }
 

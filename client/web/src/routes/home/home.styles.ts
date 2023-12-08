@@ -3,7 +3,6 @@ import {mixinScreen} from '../../styles';
 
 export const HomeStyles = css`
   :host {
-    ${mixinScreen('flex')}
     align-items: center;
     justify-content: center;
     flex-direction: column;
@@ -11,14 +10,14 @@ export const HomeStyles = css`
   }
 
   .split-layout {
-      display: flex;
       flex-direction: column;
       flex: 1;
       width: 100%;
+      height: 100%;
   }
 
   .top-layout {
-  height: 90%;
+  height: 45%;
   flex-direction: row;
   }
 

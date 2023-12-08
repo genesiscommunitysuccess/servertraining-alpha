@@ -10,6 +10,8 @@
  */
 systemDefinition {
     global {
+        item(name = "ADMIN_PERMISSION_ENTITY_TABLE", value = "COUNTERPARTY")
+        item(name = "ADMIN_PERMISSION_ENTITY_FIELD", value = "COUNTERPARTY_ID")
         item(name = "NULLABILITY_FOR_TRADE_FIELDS", value = false)
     }
 
