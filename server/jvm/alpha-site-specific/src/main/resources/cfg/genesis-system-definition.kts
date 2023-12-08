@@ -24,9 +24,6 @@ systemDefinition {
             value = "-XX:MaxHeapFreeRatio=70 -XX:MinHeapFreeRatio=30 -XX:+UseG1GC -XX:+UseStringDeduplication -XX:OnOutOfMemoryError=\"handleOutOfMemoryError.sh %p\""
         )
 
-        item(name = "ADMIN_PERMISSION_ENTITY_TABLE", value = "COUNTERPARTY")
-        item(name = "ADMIN_PERMISSION_ENTITY_FIELD", value = "COUNTERPARTY_ID")
-
         item(name = "SYSTEM_DEFAULT_USER_NAME", value = "" )
         item(name = "SYSTEM_DEFAULT_EMAIL", value = "notifications@freesmtpservers.com" )
         item(name = "EMAIL_SMTP_HOST", value = "smtp.freesmtpservers.com" )

@@ -144,6 +144,7 @@ eventHandler {
     }
 
     eventHandler<PositionReport> {
+        schemaValidation = false
         onCommit {
             val mapper = GenesisJacksonMapper.csvWriter<TradeView>()
             val today = LocalDate.now().toString()

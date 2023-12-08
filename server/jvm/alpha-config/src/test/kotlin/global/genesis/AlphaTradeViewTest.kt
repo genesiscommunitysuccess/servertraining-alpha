@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.joda.time.DateTime
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions.*;
 import javax.inject.Inject
 
 class AlphaTradeViewTest : AbstractDatabaseTest() {
@@ -21,7 +21,7 @@ class AlphaTradeViewTest : AbstractDatabaseTest() {
 
     override fun createMockDictionary(): GenesisDictionary = prodDictionary()
 
-    @Before
+    @BeforeEach
     fun setup() {
         TestUtil.loadData(resolvePath("data/TEST_DATA.csv"), rxDb)
     }

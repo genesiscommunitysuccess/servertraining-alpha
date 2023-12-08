@@ -63,7 +63,7 @@ class InstrumentUploadEndpoint @Inject constructor(
     override fun process(s: String, fullHttpRequest: FullHttpRequest, channel: Channel): Any {
         try {
             //Get user from session token
-            val username: String = fileHelper.getValidatedUserName(fullHttpRequest.headers()["SESSION_AUTH_TOKEN"])
+            val username: String? = fileHelper.getValidatedUserName(fullHttpRequest.headers()["SESSION_AUTH_TOKEN"])
             //TODO validate user is in the correct group when we have rights set up
 
             //Get and validate request input

@@ -21,9 +21,9 @@ class FileHelper {
     }
 
     @Throws(FileEndpointException::class)
-    fun getValidatedUserName(sessionAuthToken: String): String {
-        val foundUserSession: UserSession = db!!.get(UserSession.BySessionAuthToken(sessionAuthToken)).blockingGet()
-        return foundUserSession.userName
+    fun getValidatedUserName(sessionAuthToken: String): String? {
+        val foundUserSession: UserSession? = db!!.get(UserSession.BySessionAuthToken(sessionAuthToken)).blockingGet()
+        return foundUserSession?.userName ?: null
     }
 
     fun errorResponse(e: FileEndpointException): DefaultFullHttpResponse {

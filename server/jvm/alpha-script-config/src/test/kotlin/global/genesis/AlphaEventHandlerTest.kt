@@ -12,8 +12,8 @@ import global.genesis.testsupport.GenesisTestConfig
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.joda.time.DateTime
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -29,7 +29,7 @@ class AlphaEventHandlerTest : AbstractGenesisTestSupport<GenesisSet>(
 ) {
     override fun systemDefinition(): Map<String, Any> = mapOf("IS_SCRIPT" to "true")
 
-    @Before
+    @BeforeEach
     fun setUp() {
         authorise("ENTITY_VISIBILITY", "1", "JaneDee")
 

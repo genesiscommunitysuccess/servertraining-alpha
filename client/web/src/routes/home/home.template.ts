@@ -1,5 +1,6 @@
 import {html, repeat, when, ref} from '@microsoft/fast-element';
 import type {Home} from './home';
+import { tradeFormCreateSchema, tradeFormUpdateSchema } from './schemas';
 
 export const positionsColumnDefs: any[] = [
     {field: 'INSTRUMENT_ID', headerName: 'Instrument'},
@@ -20,6 +21,8 @@ export const HomeTemplate = html<Home>`
           updateEvent = "EVENT_TRADE_MODIFY"
           deleteEvent = "EVENT_TRADE_CANCELLED"
           :columns=${x => x.columns}
+          :createFormUiSchema=${() => tradeFormCreateSchema}
+          :updateFormUiSchema=${() => tradeFormUpdateSchema}
         ></entity-management>
     </div>
     <div class="top-layout">
@@ -27,7 +30,7 @@ export const HomeTemplate = html<Home>`
             <span class="card-title">Positions</span>
             <zero-grid-pro ${ref('positionsGrid')} rowHeight="45" only-template-col-defs>
                 ${when(x => x.connection.isConnected, html`
-                  <grid-pro-genesis-datasource resourceName="ALL_POSITIONS"></grid-pro-genesis-datasource>
+                  <grid-pro-genesis-datasource resource-name="ALL_POSITIONS"></grid-pro-genesis-datasource>
                   ${repeat(() => positionsColumnDefs, html`
                     <grid-pro-column :definition="${x => x}" />
                   `)}

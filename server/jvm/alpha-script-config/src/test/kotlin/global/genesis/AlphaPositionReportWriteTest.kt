@@ -7,7 +7,7 @@ import global.genesis.message.core.event.EventReply
 import global.genesis.testsupport.AbstractGenesisTestSupport
 import global.genesis.testsupport.GenesisTestConfig
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class AlphaPositionReportWriteTest : AbstractGenesisTestSupport<GenesisSet>(
     GenesisTestConfig {
