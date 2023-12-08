@@ -47,6 +47,9 @@ distributions {
 }
 // To give custom name to the distribution package
 tasks {
+    copyDependencies {
+        enabled = false
+    }      
     distZip {
         archiveBaseName.set("alpha-site-specific")
         archiveClassifier.set("bin")
