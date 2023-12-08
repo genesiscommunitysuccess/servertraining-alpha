@@ -1,20 +1,9 @@
 package global.genesis
 
 import com.google.inject.Inject
-import global.genesis.commons.model.GenesisSet
-import global.genesis.db.DbRecord
 import global.genesis.db.entity.*
-import global.genesis.db.query.api.reading.DataTypeConverter
-import global.genesis.db.query.api.reading.DbRecordReader
-import global.genesis.db.query.api.reading.GenesisSetReader
-import global.genesis.db.query.api.reading.ValueReader
-import global.genesis.db.query.api.rowmapper.RowMapper
-import global.genesis.dictionary.pal.TableField
-import global.genesis.gen.config.tables.TRADE
 import global.genesis.gen.dao.Trade
 import global.genesis.gen.dao.description.TradeDescription
-import global.genesis.gen.dao.enums.Direction
-import global.genesis.gen.dao.enums.TradeStatus
 import global.genesis.gen.dao.repository.TradeAsyncRepository
 import global.genesis.testsupport.dataserver.DataServerMsg
 import global.genesis.testsupport.dataserver.DataServerTest
@@ -25,14 +14,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.awaitility.kotlin.await
 import org.awaitility.kotlin.has
-import org.awaitility.kotlin.matches
 import org.awaitility.kotlin.untilCallTo
-import org.junit.Test
-import java.io.Serializable
+import org.junit.jupiter.api.Test
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.TimeUnit
-import kotlin.reflect.KClass
-import kotlin.reflect.KMutableProperty1
 
 class AlphaDataServerTradeTest : DataServerTest<Trade>(
     genesisHome = "/GenesisHome/",

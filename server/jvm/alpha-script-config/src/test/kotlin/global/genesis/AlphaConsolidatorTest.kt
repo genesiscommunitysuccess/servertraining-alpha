@@ -1,20 +1,16 @@
 package global.genesis
 
 import global.genesis.commons.model.GenesisSet
-import global.genesis.db.DbRecord
-import global.genesis.dictionary.GenesisDictionary
 import global.genesis.gen.dao.Position
 import global.genesis.gen.dao.Trade
 import global.genesis.gen.dao.enums.Direction
 import global.genesis.gen.dao.enums.TradeStatus
-import global.genesis.gen.dao.repository.PositionRx3RepositoryImpl
 import global.genesis.testsupport.AbstractGenesisTestSupport
 import global.genesis.testsupport.GenesisTestConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
-import javax.inject.Inject
+import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class AlphaConsolidatorTest : AbstractGenesisTestSupport<GenesisSet>(
