@@ -23,23 +23,6 @@ systemDefinition {
             name = "JVM_OPTIONS",
             value = "-XX:MaxHeapFreeRatio=70 -XX:MinHeapFreeRatio=30 -XX:+UseG1GC -XX:+UseStringDeduplication -XX:OnOutOfMemoryError=\"handleOutOfMemoryError.sh %p\""
         )
-
-        item(name = "SYSTEM_DEFAULT_USER_NAME", value = "" )
-        item(name = "SYSTEM_DEFAULT_EMAIL", value = "notifications@freesmtpservers.com" )
-        item(name = "EMAIL_SMTP_HOST", value = "smtp.freesmtpservers.com" )
-        item(name = "EMAIL_SMTP_PORT", value = "25" )
-        item(name = "EMAIL_SMTP_USER", value = "" )
-        item(name = "EMAIL_SMTP_PW", value = "" )
-        item(name = "EMAIL_SMTP_PROTOCOL", value = "SMTP")
-
-        item(name = "SYS_DEF_FILE_MAX_SIZE_IN_BITS", value = "32000000")
-
-        // SFTP
-        item(name = "SFTP_PATH", value = "sftp:22/")
-        item(name = "SFTP_USERNAME", value = "JohnDoe")
-        item(name = "SFTP_PASSWORD", value = "Password11")
-        item(name = "SFTP_DIRECTORY", value = "folder-inside-sftp")
-        item(name = "SFTP_FILE", value = "from.txt")
     }
 
     systems {
