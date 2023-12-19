@@ -65,16 +65,6 @@
         <language>pal</language>
         <loggingLevel>TRACE,DATADUMP_ON</loggingLevel>
     </process>
-    <process name="ALPHA_NOTIFY">
-        <groupId>ALPHA</groupId>
-        <start>true</start>
-        <options>-Xmx128m -DXSD_VALIDATE=false</options>
-        <module>genesis-notify</module>
-        <package>global.genesis.notify</package>
-        <script>genesis-notify.kts</script>
-        <language>pal</language>
-        <description>Notify Mechanism for sending messages to external systems, such as Email and Symphony</description>
-    </process>
     <process name="ALPHA_STREAMER">
         <groupId>ALPHA</groupId>
         <start>true</start>
