@@ -11,6 +11,7 @@ systemDefinition {
         item(name = "ZeroMQProxyInboundPort", value = "5001")
         item(name = "ZeroMQProxyOutboundPort", value = "5000")
         item(name = "DbHost", value = "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres")
+        item(name = "DbSqlConnectionPoolSize", value = "4")
         item(name = "DbMode", value = "VANILLA")
         item(name = "GenesisNetProtocol", value = "V2")
         item(name = "ResourcePollerTimeout", value = "5")
