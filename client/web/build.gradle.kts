@@ -8,10 +8,10 @@ plugins {
 
 node {
     // Version of node to use.
-    version.set("16.13.0")
+    version.set("20.8.1")
 
     // Version of npm to use.
-    npmVersion.set("8.1.0")
+    npmVersion.set("10.1.0")
 
     // If true, it will download node using above parameters.
     // If false, it will try to use globally installed node.
