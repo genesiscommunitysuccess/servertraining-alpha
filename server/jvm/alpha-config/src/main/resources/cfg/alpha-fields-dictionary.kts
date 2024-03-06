@@ -11,16 +11,20 @@
 
 fields {
 
-    field("TRADE_ID", type = STRING, maxSize = 100)
-    field("QUANTITY", type = INT, nullable = SysDef.NULLABILITY_FOR_TRADE_FIELDS)
+    field("TRADE_ID", type = STRING)
+    field("QUANTITY", type = INT)
     field("PRICE", type = DOUBLE)
-    field("SYMBOL", type = STRING, nullable = SysDef.NULLABILITY_FOR_TRADE_FIELDS, maxSize = 50)
+    field("SYMBOL", type = STRING)
     field("DIRECTION", type = ENUM("BUY", "SELL", default = "BUY"))
 
     field("COUNTERPARTY_ID", type = STRING)
     field("COUNTERPARTY_NAME", type = STRING)
     field("ENABLED", type = BOOLEAN)
     field("COUNTERPARTY_LEI", type = STRING)
+    field("USER_COUNTERPARTY_HIDE_LEI_ID", type= STRING)
+    field("USER_NAME_COUNTERPARTY", type= STRING)
+    field("HIDE_LEI", type= BOOLEAN)
+    field("BEEN_AUDITED", type= BOOLEAN)
 
     field("INSTRUMENT_ID", type = STRING)
     field("INSTRUMENT_NAME", type = STRING)
@@ -29,8 +33,8 @@ fields {
     field("CURRENCY_ID", type = STRING)
     field("ASSET_CLASS", type = STRING)
 
-    field("TRADE_DATE", type = DATE, nullable = SysDef.NULLABILITY_FOR_TRADE_FIELDS)
-    field("ENTERED_BY", type = STRING, nullable = SysDef.NULLABILITY_FOR_TRADE_FIELDS, maxSize = 100)
+    field("TRADE_DATE", type = DATE)
+    field("ENTERED_BY", type = STRING)
     field(name = "TRADE_STATUS", type = ENUM("NEW", "ALLOCATED", "CANCELLED", default = "NEW"))
 
     field("POSITION_ID", type = STRING)
@@ -39,9 +43,10 @@ fields {
     field("VALUE", type = DOUBLE)
     field("PNL", type = DOUBLE)
 
-    field("FAVOURITE_TRADE_ID", type = STRING, maxSize = 100)
-    field("FAVOURITE_TRADE_USER_NAME", type = STRING, maxSize = 100)
-
-    field("BEEN_AUDITED", type = BOOLEAN)
+    field("COMPANY_ID", type = STRING)
+    field("COMPANY_NAME", type = STRING)
+    field("COMPANY_LEI", type = STRING)
+    field("COMPANY_CEO", type = STRING)
+    field(name = "COMPANY_STATUS", type = ENUM("NEW", "OPENED", "CLOSED", default = "NEW"))
 }
 
