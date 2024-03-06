@@ -27,6 +27,14 @@ tables {
         primaryKey {
             TRADE_ID
         }
+        indices {
+            nonUnique {
+                COUNTERPARTY_ID
+            }
+            nonUnique {
+                INSTRUMENT_ID
+            }
+        }
     }
 
     table (name = "COUNTERPARTY", id = 2001) {
@@ -40,6 +48,22 @@ tables {
         }
     }
 
+    table (name = "USER_COUNTERPARTY_HIDE_LEI", id=2010){
+        sequence(USER_COUNTERPARTY_HIDE_LEI_ID, "UC")
+        USER_NAME_COUNTERPARTY
+        COUNTERPARTY_ID
+        HIDE_LEI not null
+        primaryKey {
+            USER_COUNTERPARTY_HIDE_LEI_ID
+        }
+        indices {
+            unique {
+                USER_NAME_COUNTERPARTY
+                COUNTERPARTY_ID
+            }
+        }
+    }
+
     table (name = "INSTRUMENT", id = 2002) {
         sequence(INSTRUMENT_ID, "IN")
         INSTRUMENT_NAME
@@ -50,6 +74,11 @@ tables {
 
         primaryKey {
             INSTRUMENT_ID
+        }
+        indices {
+            nonUnique {
+                CURRENCY_ID
+            }
         }
     }
 
@@ -79,18 +108,17 @@ tables {
         }
     }
 
-    table(name = "FAVOURITE_TRADE", id = 2005) {
-        sequence(FAVOURITE_TRADE_ID, "FA")
-        TRADE_ID
-        FAVOURITE_TRADE_USER_NAME
+    // create a company table
+    table(name = "COMPANY", id = 2005) {
+        sequence(COMPANY_ID, "CO")
+        COMPANY_NAME
+        COMPANY_LEI
+        COMPANY_CEO
+        COMPANY_STATUS
 
         primaryKey {
-            FAVOURITE_TRADE_ID
-        }
-        indices {
-            unique {
-                FAVOURITE_TRADE_USER_NAME
-            }
+            COMPANY_ID
         }
     }
+
 }
