@@ -25,11 +25,13 @@ systemDefinition {
         item(name = "SYS_DEF_FILE_MAX_SIZE_IN_BITS", value = "32000000")
 
         // SFTP
-        item(name = "SFTP_PATH", value = "sftp:22/")
-        item(name = "SFTP_USERNAME", value = "JohnDoe")
-        item(name = "SFTP_PASSWORD", value = "Password11")
-        item(name = "SFTP_DIRECTORY", value = "folder-inside-sftp")
-        item(name = "SFTP_FILE", value = "from.txt")
+        item(name = "SYSTEM_DEFAULT_USER_NAME", value = "INSERT YOUR USER")
+        item(name = "SYSTEM_DEFAULT_EMAIL", value = "INSERT YOUR EMAIL")
+        item(name = "EMAIL_SMTP_HOST", value = "INSERT YOUR HOST")
+        item(name = "EMAIL_SMTP_PORT", value = "888")
+        item(name = "EMAIL_SMTP_USER", value = "Insert your user")
+        item(name = "EMAIL_SMTP_PW", value = insert your password")
+        item(name = "EMAIL_SMTP_PROTOCOL", value = "SMTP_TLS")
     }
 
     systems {
