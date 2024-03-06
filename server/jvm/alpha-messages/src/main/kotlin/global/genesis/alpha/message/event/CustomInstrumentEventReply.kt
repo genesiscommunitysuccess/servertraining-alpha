@@ -2,8 +2,10 @@ package global.genesis.alpha.message.event
 
 import global.genesis.message.core.Outbound
 
-sealed class CustomInstrumentEventReply : Outbound() {
-    class InstrumentEventValidateAck : CustomInstrumentEventReply()
-    data class InstrumentEventAck(val instrumentId: String) : CustomInstrumentEventReply()
-    data class InstrumentEventNack(val error: String) : CustomInstrumentEventReply()
+sealed class CustomInstrumentEventReply: Outbound() {
+    class ValidationInstrumentAck() : CustomInstrumentEventReply()
+
+    data class InstrumentAck(val AckMessage : String) : CustomInstrumentEventReply()
+    data class InstrumentNack(val NackMessage : String) : CustomInstrumentEventReply()
+    data class InstrumentInsertError(val InstrumentID: String) : CustomInstrumentEventReply()
 }
