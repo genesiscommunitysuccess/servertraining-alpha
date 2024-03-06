@@ -24,6 +24,9 @@ systemDefinition {
 
         item(name = "SYS_DEF_FILE_MAX_SIZE_IN_BITS", value = "32000000")
 
+        item(name = "SFTP_USERNAME", value = "JohnDoe")
+        item(name = "SFTP_PASSWORD", value = "Password11")
+
         // SFTP
         item(name = "SYSTEM_DEFAULT_USER_NAME", value = "INSERT YOUR USER")
         item(name = "SYSTEM_DEFAULT_EMAIL", value = "INSERT YOUR EMAIL")
