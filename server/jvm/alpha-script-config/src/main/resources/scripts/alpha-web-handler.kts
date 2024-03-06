@@ -19,11 +19,9 @@ webHandlers("BASE-PATH"){
             }
         }
     }
-    endpoint<Trade,Trade>(GET,"TEST"){
+    endpoint(GET,"ALL-TRADES"){
         handleRequest{
-            val trade = db.insert(body).record
-            triggerEvent("TRADE_AUDIT_STREAM",trade)
-            trade
+            db.getBulk(TRADE)
         }
     }
 }

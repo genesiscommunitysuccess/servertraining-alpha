@@ -29,7 +29,7 @@ pluginManagement {
 }
 
 
-include("alpha-camel-libs")
+
 include("alpha-config")
 include("alpha-messages")
 include("alpha-eventhandler")
@@ -43,7 +43,7 @@ include("alpha-dictionary-cache:alpha-generated-hft")
 include("alpha-dictionary-cache:alpha-generated-view")
 include("alpha-deploy")
 include("alpha-site-specific")
-include("alpha-file-handler")
+include("alpha-camel-libs")
 
 includeBuild("../../client") {
     dependencySubstitution {
