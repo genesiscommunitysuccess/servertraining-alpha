@@ -1,11 +1,8 @@
-streams {
-    stream("TRADE_AUDIT_STREAM", TRADE_AUDIT.BY_TIMESTAMP){
-        where { trades->
-            trades.quantity!! > 100
-        }
-        fields{
-            TRADE.TRADE_ID
-
+streamerClients {
+    streamerClient(clientName = "TRADE_AUDIT_RESPONSE"){
+        dataSource(processName = "ALPHA_STREAMER", sourceName = "TRADE_AUDIT_STREAM")
+        onMessage{
+            send("GENESIS_COMPACT_PROCESS", "EVENT_TRADE_AUDIT_STREAM")
         }
     }
 }
