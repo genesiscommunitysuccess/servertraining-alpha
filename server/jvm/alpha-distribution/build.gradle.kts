@@ -8,7 +8,6 @@ dependencies {
     implementation(project(":alpha-eventhandler"))
     implementation(project(":alpha-messages"))
     implementation(project(":alpha-script-config"))
-    implementation(project(":alpha-file-handler"))
     implementation(project(":alpha-camel-libs"))
 }
 
@@ -69,7 +68,7 @@ val distribution by configurations.creating {
 tasks {
     distTar {
         mustRunAfter(":alpha-deploy:copyDependencies")
-    }    
+    }
     distZip {
         archiveBaseName.set("genesisproduct-alpha")
         archiveClassifier.set("bin")
